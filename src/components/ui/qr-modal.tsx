@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { QrCode, Download, X } from "lucide-react";
-import QRCode from "qrcode";
 
 interface QrModalProps {
   isOpen: boolean;
@@ -17,7 +16,10 @@ export function QrModal({ isOpen, onClose, url, producerName }: QrModalProps) {
 
   useEffect(() => {
     if (isOpen && url) {
-      QRCode.toDataURL(url, { width: 320, margin: 2, color: { dark: "#4A7010", light: "#FFFFFF" } })
+      import("qrcode")
+        .then((QRCode) =>
+          QRCode.toDataURL(url, { width: 320, margin: 2, color: { dark: "#4A7010", light: "#FFFFFF" } })
+        )
         .then(setQrDataUrl)
         .catch(console.error);
     }

@@ -313,7 +313,7 @@ export default function ProductoresPage() {
                 </span>
                 <div className="flex items-center gap-2">
                   <QrButton
-                    url={`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/mapa?search=${encodeURIComponent(producer.name)}`}
+                    url={`${typeof window !== "undefined" ? window.location.origin : ""}/mapa?search=${encodeURIComponent(producer.name)}`}
                     producerName={producer.name}
                     variant="outline"
                   />

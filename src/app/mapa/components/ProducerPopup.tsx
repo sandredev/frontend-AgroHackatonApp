@@ -31,7 +31,7 @@ export default function ProducerPopup({ producer }: ProducerPopupProps) {
   const [isQrOpen, setIsQrOpen] = useState(false);
   const { rainforestAlliance, traceability, representative, products } = producer;
 
-  const qrUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/mapa?search=${encodeURIComponent(producer.name)}`;
+  const qrUrl = `${window.location.origin}/mapa?search=${encodeURIComponent(producer.name)}`;
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();

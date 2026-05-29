@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
-import { Layers } from 'lucide-react';
+import { Layers, Filter } from 'lucide-react';
 import SearchBar from './components/SearchBar';
 import FilterSidebar from './components/FilterSidebar';
 import LayerControl from './components/LayerControl';
@@ -52,6 +52,7 @@ function MapaPageInner() {
   const [activeLayer, setActiveLayer] = useState<'street' | 'satellite' | 'terrain'>('street');
   const [showOnlyCertified, setShowOnlyCertified] = useState(false);
   const [showAgrotourism, setShowAgrotourism] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const searchQueryFromUrl = searchParams.get('search');
 
@@ -191,19 +192,47 @@ function MapaPageInner() {
 
   return (
     <div className="flex-1 flex bg-[#FFFAF3] relative overflow-hidden">
-      <FilterSidebar
-        filters={filters}
-        onFiltersChange={handleFiltersChange}
-      />
+      {/* Desktop sidebar */}
+      <div className="hidden lg:block shrink-0">
+        <FilterSidebar
+          filters={filters}
+          onFiltersChange={handleFiltersChange}
+        />
+      </div>
+
+      {/* Mobile sidebar overlay */}
+      {isSidebarOpen && (
+        <>
+          <div
+            className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+          <div className="fixed left-0 top-0 z-50 h-full w-80 lg:hidden overflow-y-auto shadow-2xl" style={{ maxWidth: "85vw" }}>
+            <FilterSidebar
+              filters={filters}
+              onFiltersChange={handleFiltersChange}
+            />
+          </div>
+        </>
+      )}
 
       <div className="flex-1 flex flex-col min-h-0">
         <div className="relative bg-[#FFFAF3] px-4 py-3 shrink-0">
-          <div className="max-w-[1280px] mx-auto flex flex-col sm:flex-row gap-3">
-            <SearchBar
-              value={filters.searchQuery}
-              onChange={handleSearchChange}
-              placeholder="Buscar fincas, municipios, productos..."
-            />
+          <div className="max-w-[1280px] mx-auto flex items-center gap-3">
+            <button
+              onClick={() => setIsSidebarOpen(true)}
+              className="lg:hidden flex items-center gap-2 px-4 py-3 rounded-xl shadow-lg text-sm font-medium bg-white text-gray-700 hover:text-[#6D9E13] transition-colors shrink-0"
+            >
+              <Filter className="w-4 h-4" />
+              <span className="hidden sm:inline">Filtros</span>
+            </button>
+            <div className="flex-1">
+              <SearchBar
+                value={filters.searchQuery}
+                onChange={handleSearchChange}
+                placeholder="Buscar fincas, municipios, productos..."
+              />
+            </div>
             <div className="flex gap-2 shrink-0 relative">
               <button
                 onClick={() => setIsLayerOpen(!isLayerOpen)}
